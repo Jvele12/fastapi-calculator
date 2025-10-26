@@ -51,10 +51,5 @@ Runs tests on each push
 
 Reports test results in the Actions tab
 
-📸 Required Screenshots for Submission
-✅ GitHub Actions Workflow: Successful CI run screenshot
-
-✅ FastAPI App in Browser: Screenshot of http://127.0.0.1:8000/docs
-
 👨‍💻 Author
 Jvele12
