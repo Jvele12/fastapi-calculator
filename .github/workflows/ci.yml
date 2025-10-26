@@ -23,4 +23,6 @@ jobs:
         playwright install --with-deps
 
     - name: Run tests
-      run: pytest -v
+      run: |
+        export PYTHONPATH=$PYTHONPATH:$(pwd)
+        pytest -v
