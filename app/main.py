@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app import operations
+import logging
 
 app = FastAPI(title="Calculator API")
 
@@ -21,3 +22,17 @@ def divide(a: float, b: float):
         return {"result": operations.divide(a, b)}
     except ZeroDivisionError:
         return {"error": "Division by zero not allowed."}
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[logging.FileHandler("app.log"), logging.StreamHandler()]
+)
+
+@app.middleware("http")
+async def log_requests(request, call_next):
+    logging.info(f"Request: {request.method} {request.url}")
+    response = await call_next(request)
+    logging.info(f"Response status: {response.status_code}")
+    return response
