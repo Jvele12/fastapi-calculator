@@ -1,5 +1,13 @@
-from app.database import SessionLocal
+import pytest
+from app.database import Base, engine, SessionLocal
 from app import models, hashing
+
+@pytest.fixture(autouse=True)
+def clean_database():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    yield
+    Base.metadata.drop_all(bind=engine)
 
 def test_create_user_unique_email():
     db = SessionLocal()
