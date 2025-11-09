@@ -22,7 +22,7 @@ jobs:
 
     - name: Build and start Docker Compose (DB + App)
       run: |
-        docker-compose up -d db
+        docker compose up -d db
         echo "Waiting for database to start..."
         for i in {1..10}; do
           if docker exec fastapi_db pg_isready -U postgres; then
@@ -35,8 +35,8 @@ jobs:
 
     - name: Run tests inside Docker
       run: |
-        docker-compose run web pytest --cov=app --cov-report=term-missing -v
-        docker-compose down -v --remove-orphans
+        docker compose run web pytest --cov=app --cov-report=term-missing -v
+        docker compose down -v --remove-orphans
 
     - name: Log in to Docker Hub
       if: success()
