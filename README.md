@@ -1,7 +1,9 @@
-# 🧮 FastAPI Calculator
+# 🧮 FastAPI Calculator + Secure User Model
 
 A simple calculator web API built with **FastAPI** that supports addition, subtraction, multiplication, and division.  
 This project includes **unit tests**, **integration tests**, **end-to-end (E2E)** tests with **Playwright**, and a **GitHub Actions CI pipeline**.
+This FastAPI application includes arithmetic operations and a secure SQLAlchemy-based User model with hashed passwords. 
+It integrates with PostgreSQL, uses Pydantic schemas for validation, and includes CI/CD automation using GitHub Actions and Docker Hub.
 
 ---
 
