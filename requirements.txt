@@ -16,7 +16,7 @@ annotated-types==0.7.0
 typing-inspection==0.4.2
 
 # --- Authentication & Security ---
-passlib[bcrypt]==1.7.5
+passlib[bcrypt]==1.7.4
 bcrypt==4.1.2  
 
 # --- Testing & Automation ---
