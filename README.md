@@ -34,6 +34,12 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 Visit 👉 http://127.0.0.1:8000/docs to test the API.
 
+# FastAPI Secure User Model with CI/CD
+
+## Run locally
+```bash
+docker-compose up --build
+
 🧪 Running Tests
 Unit & Integration Tests
 

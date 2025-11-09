@@ -1,6 +1,11 @@
+version: "3.8"
+
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: your_dockerhub_username/fastapi-calculator:latest
     container_name: fastapi_app
     ports:
       - "8000:8000"
@@ -35,6 +40,16 @@ services:
       - "5050:80"
     depends_on:
       - db
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["pytest", "-v"]
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/fastapi_db
 
 volumes:
   postgres_data:
