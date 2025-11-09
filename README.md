@@ -40,6 +40,21 @@ Visit 👉 http://127.0.0.1:8000/docs to test the API.
 ```bash
 docker-compose up --build
 
+🧩 2. How to Run Tests Locally
+### Run Tests Locally
+```bash
+# Build and start containers
+docker-compose up -d --build
+
+# Run tests inside Docker
+docker-compose run web pytest -v
+
+### 🐳 3. Docker Hub Link
+```markdown
+### Docker Hub Repository
+Docker image is available here:
+👉 [https://hub.docker.com/r/Jvele12/fastapi-calculator](https://hub.docker.com/r/Jvele12/fastapi-calculator)
+
 🧪 Running Tests
 Unit & Integration Tests
 
