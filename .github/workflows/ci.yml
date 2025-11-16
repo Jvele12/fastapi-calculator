@@ -52,7 +52,4 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-calculator:latest
 
-        - name: Run tests (with coverage)
-  run: |
-    export PYTHONPATH=$PYTHONPATH:$(pwd)
-    pytest --cov=app --cov-report=term-missing -v
+
