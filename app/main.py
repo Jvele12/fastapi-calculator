@@ -4,13 +4,10 @@ from app import operations, models, schemas, crud
 from .database import Base, engine, SessionLocal
 import logging
 
-# Initialize FastAPI
 app = FastAPI(title="Calculator & User API")
 
-# === Initialize database ===
 Base.metadata.create_all(bind=engine)
 
-# === Logging setup ===
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -28,7 +25,6 @@ async def log_requests(request: Request, call_next):
     return response
 
 
-# === Calculator Endpoints ===
 @app.get("/add")
 def add(a: float, b: float):
     return {"result": operations.add(a, b)}
@@ -49,7 +45,6 @@ def divide(a: float, b: float):
         return {"error": "Division by zero not allowed."}
 
 
-# === Database Dependency ===
 def get_db():
     db = SessionLocal()
     try:
@@ -57,8 +52,6 @@ def get_db():
     finally:
         db.close()
 
-
-# === User Management Endpoint ===
 @app.post("/users/", response_model=schemas.UserRead)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()

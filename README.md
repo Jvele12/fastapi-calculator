@@ -57,22 +57,76 @@ docker-compose run web pytest -v
 Docker image is available here:
 👉 [https://hub.docker.com/r/Jvele12/fastapi-calculator](https://hub.docker.com/r/Jvele12/fastapi-calculator)
 
-🧪 Running Tests
-Unit & Integration Tests
 
-pytest -v
-End-to-End Tests (Playwright)
+📦 Data Models Overview
+User Model
 
-pytest tests/test_e2e_playwright.py
+Table: users
 
-🧰 Continuous Integration (GitHub Actions)
-This project includes a CI workflow (.github/workflows/ci.yml) that automatically:
+Fields:
 
-Installs dependencies
+id (PK)
 
-Runs tests on each push
+username (unique)
 
-Reports test results in the Actions tab
+email (unique)
+
+password_hash (hashed via passlib[bcrypt])
+
+created_at (timestamp)
+
+Schemas:
+
+UserCreate: username, email, password
+
+UserRead: id, username, email, created_at (no password exposed)
+
+Calculation Model
+
+Table: calculations
+
+Fields:
+
+id (PK)
+
+a (float)
+
+b (float)
+
+type (enum: add, sub, multiply, divide)
+
+result (float, optional)
+
+created_at (timestamp)
+
+user_id (FK to users.id, optional)
+
+Schemas:
+
+CalculationCreate: a, b, type
+
+Validation: for type == "divide", b must not be zero
+
+CalculationRead: id, a, b, type, result, user_id, created_at
+
+A simple factory chooses which operation to perform based on CalculationType.
+
+
+🔁 CI/CD (GitHub Actions)
+
+The workflow in .github/workflows/ci.yml:
+
+Checks out the repo
+
+Sets up Python
+
+Spins up PostgreSQL as a service
+
+Installs dependencies (including Playwright)
+
+Runs pytest --cov
+
+Builds and pushes Docker image to Docker Hub on success
 
 👨‍💻 Author
 Jvele12
