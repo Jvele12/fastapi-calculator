@@ -3,10 +3,12 @@ from typing import Literal, Optional
 from datetime import datetime
 from .models import CalculationType
 
+
 class UserCreate(BaseModel):
     username: str
     email: EmailStr
     password: str
+
 
 class UserRead(BaseModel):
     id: int
@@ -16,12 +18,19 @@ class UserRead(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
 CalculationTypeLiteral = Literal["add", "sub", "multiply", "divide"]
+
 
 class CalculationCreate(BaseModel):
     a: float
     b: float
-    type: CalculationType 
+    type: CalculationType
 
     @model_validator(mode="after")
     def check_divide_by_zero(self):
@@ -29,13 +38,26 @@ class CalculationCreate(BaseModel):
             raise ValueError("b cannot be zero for divide")
         return self
 
+
+class CalculationUpdate(BaseModel):
+    a: Optional[float] = None
+    b: Optional[float] = None
+    type: Optional[CalculationType] = None
+
+    @model_validator(mode="after")
+    def check_divide_by_zero_on_update(self):
+        if self.type == CalculationType.divide and self.b == 0:
+            raise ValueError("b cannot be zero for divide")
+        return self
+
+
 class CalculationRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     a: float
     b: float
-    type: str
+    type: str              
     result: Optional[float] = None
     created_at: datetime
     user_id: Optional[int] = None
