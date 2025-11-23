@@ -77,7 +77,7 @@ def create_user_legacy(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db, user)
 
 
-@app.post("/users/register", response_model=schemas.UserRead, status_code=status.HTTP_201_CREATED)
+@app.post("/users/register", response_model=schemas.UserRead, status_code=status.HTTP_200_OK)
 def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(db, user.email)
     if db_user:
