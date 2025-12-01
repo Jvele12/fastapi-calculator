@@ -61,3 +61,8 @@ class CalculationRead(BaseModel):
     result: Optional[float] = None
     created_at: datetime
     user_id: Optional[int] = None
+
+    
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"

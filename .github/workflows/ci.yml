@@ -12,6 +12,7 @@ jobs:
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}   
 
     steps:
     - name: Checkout code
@@ -51,5 +52,3 @@ jobs:
       with:
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/fastapi-calculator:latest
-
-

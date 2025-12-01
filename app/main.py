@@ -1,12 +1,32 @@
 from fastapi import FastAPI, Depends, HTTPException, Request, status
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from app import operations, schemas, crud
+from app.auth import create_access_token, get_current_user   
 from .database import Base, engine, SessionLocal
 import logging
+import os
+import time
+from sqlalchemy.exc import OperationalError,  ProgrammingError
+from .database import Base, engine, SessionLocal
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+
 
 app = FastAPI(title="Calculator & User API")
 
-Base.metadata.create_all(bind=engine)
+for attempt in range(10):
+    try:
+        Base.metadata.create_all(bind=engine)
+        print("✅ Database tables created (or already exist).")
+        break
+    except OperationalError:
+        print(f"⏳ DB not ready yet (attempt {attempt + 1}/10), sleeping 3s...")
+        time.sleep(3)
+else:
+    raise RuntimeError("❌ Could not connect to the database after multiple attempts.")
 
 logging.basicConfig(
     level=logging.INFO,
@@ -64,9 +84,8 @@ def get_db():
     finally:
         db.close()
 
-
 # =====================================================
-#  User Endpoints
+#  User Endpoints (JWT-based)
 # =====================================================
 
 @app.post("/users/", response_model=schemas.UserRead)
@@ -83,6 +102,7 @@ def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     return crud.create_user(db, user)
+    
 
 
 @app.post("/users/login", response_model=schemas.UserRead)
@@ -94,6 +114,11 @@ def login_user(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
             detail="Invalid email or password",
         )
     return user
+
+
+@app.get("/me", response_model=schemas.UserRead)
+def read_current_user(current_user = Depends(get_current_user)):
+    return current_user
 
 
 # =====================================================
@@ -108,7 +133,7 @@ def login_user(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
 def create_calculation_endpoint(
     payload: schemas.CalculationCreate,
     db: Session = Depends(get_db),
-    user_id: int | None = None,  # Optional for now (no auth yet)
+    user_id: int | None = None,  
 ):
     calc = crud.create_calculation(db, payload, user_id=user_id)
     return calc
@@ -151,3 +176,49 @@ def delete_calculation_endpoint(calc_id: int, db: Session = Depends(get_db)):
     if not ok:
         raise HTTPException(status_code=404, detail="Calculation not found")
     return None
+
+# =====================================================
+#  Front-end pages (HTML)
+# =====================================================
+
+@app.get("/register")
+def register_page():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "register.html"))
+
+
+@app.get("/login")
+def login_page():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "login.html"))
+
+# =====================================================
+#  JWT API endpoints
+# =====================================================
+
+@app.post("/register", response_model=schemas.TokenResponse, status_code=status.HTTP_201_CREATED)
+def register_user_jwt(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        logging.error(f"Error ensuring tables exist: {e}")
+
+    db_user = crud.get_user_by_email(db, user.email)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    new_user = crud.create_user(db, user)
+    token = create_access_token({"sub": new_user.id})
+    return {"access_token": token, "token_type": "bearer"}
+
+
+
+@app.post("/login", response_model=schemas.TokenResponse)
+def login_user_jwt(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
+    user = crud.verify_user_credentials(db, credentials.email, credentials.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+        )
+
+    token = create_access_token({"sub": user.id})
+    return {"access_token": token, "token_type": "bearer"}

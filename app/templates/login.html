@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+</head>
+<body>
+  <!-- Change this to avoid just "Login" -->
+  <h1>User Login</h1>
+
+  <div>
+    <label for="email">Email:</label>
+    <input id="email" type="email" />
+  </div>
+
+  <div>
+    <label for="password">Password:</label>
+    <input id="password" type="password" />
+  </div>
+
+  <!-- Button text MUST be exactly "Login" -->
+  <button id="login-btn" type="button">Login</button>
+  <p id="message"></p>
+
+  <script>
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const messageEl = document.getElementById("message");
+    const btn = document.getElementById("login-btn");
+
+    if (btn && messageEl && emailInput && passwordInput) {
+      btn.addEventListener("click", async () => {
+        console.log("Login button clicked");
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+          messageEl.textContent = "Email and password are required.";
+          return;
+        }
+
+        try {
+          const resp = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          if (resp.ok) {
+            const data = await resp.json();
+            if (data.access_token) {
+              localStorage.setItem("jwt", data.access_token);
+            }
+            messageEl.textContent = "Login successful!";
+          } else if (resp.status === 401) {
+            messageEl.textContent = "Invalid credentials.";
+          } else {
+            messageEl.textContent = "Login failed.";
+          }
+        } catch (err) {
+          console.error(err);
+          messageEl.textContent = "Network error during login.";
+        }
+      });
+    } else {
+      console.error("Login DOM elements not found");
+    }
+  </script>
+</body>
+</html>
