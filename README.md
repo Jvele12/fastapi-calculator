@@ -114,19 +114,19 @@ A simple factory chooses which operation to perform based on CalculationType.
 
 🔁 CI/CD (GitHub Actions)
 
-The workflow in .github/workflows/ci.yml:
+Every commit to main triggers:
 
-Checks out the repo
+Build Docker environment
 
-Sets up Python
+Start Postgres + FastAPI
 
-Spins up PostgreSQL as a service
+Run unit tests
 
-Installs dependencies (including Playwright)
+Run Playwright E2E tests
 
-Runs pytest --cov
+If all pass → Build & Push image to Docker Hub
 
-Builds and pushes Docker image to Docker Hub on success
+Workflow file: .github/workflows/ci.yml
 
 👨‍💻 Author
 Jvele12
