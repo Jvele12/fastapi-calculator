@@ -106,3 +106,31 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-12-01 03:10:43,653 - INFO - Request: GET http://fastapi_app:8000/login
 2025-12-01 03:10:43,658 - INFO - Response status: 200
 2025-12-01 03:10:43,892 - INFO - Response status: 201
+2025-12-01 03:31:49,129 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-01 03:31:49,136 - INFO - Response status: 200
+2025-12-01 03:31:49,362 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-01 03:31:49,392 - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-12-01 03:31:49,730 - INFO - Response status: 201
+2025-12-01 03:31:50,498 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-01 03:31:50,503 - INFO - Response status: 200
+2025-12-01 03:31:51,441 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-01 03:31:51,446 - INFO - Response status: 200
+2025-12-01 03:31:51,671 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-01 03:31:51,978 - INFO - Response status: 201
+2025-12-01 03:31:52,009 - INFO - Request: GET http://fastapi_app:8000/login
+2025-12-01 03:31:52,014 - INFO - Response status: 200
+2025-12-01 03:31:52,136 - INFO - Request: POST http://fastapi_app:8000/login
+2025-12-01 03:31:52,441 - INFO - Response status: 200
+2025-12-01 03:31:53,264 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-01 03:31:53,271 - INFO - Response status: 200
+2025-12-01 03:31:53,504 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-01 03:31:53,805 - INFO - Response status: 201
+2025-12-01 03:31:53,841 - INFO - Request: GET http://fastapi_app:8000/login
+2025-12-01 03:31:53,845 - INFO - Response status: 200
+2025-12-01 03:31:53,952 - INFO - Request: POST http://fastapi_app:8000/login
+2025-12-01 03:31:54,223 - INFO - Response status: 401
