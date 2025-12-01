@@ -12,7 +12,7 @@ jobs:
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}   
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
 
     steps:
     - name: Checkout code
@@ -21,22 +21,12 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Build and start Docker Compose (DB + App)
+    # 🔹 Run full stack (app + db + playwright test container) like you do locally
+    - name: Run tests with docker-compose (unit + integration + E2E)
       run: |
-        docker compose up -d db
-        echo "Waiting for database to start..."
-        for i in {1..10}; do
-          if docker exec fastapi_db pg_isready -U postgres; then
-            echo "Database is ready!"
-            break
-          fi
-          echo "Waiting for DB..."
-          sleep 3
-        done
-
-    - name: Run tests inside Docker
-      run: |
-        docker compose run web pytest --cov=app --cov-report=term-missing -v
+        # Build images and start all services, run tests in "test" service
+        docker compose up --build --exit-code-from test
+        # Clean up containers, networks, volumes after tests
         docker compose down -v --remove-orphans
 
     - name: Log in to Docker Hub

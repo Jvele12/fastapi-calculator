@@ -1,10 +1,10 @@
 from playwright.sync_api import sync_playwright
+import os
 
-BASE_URL = "http://fastapi_app:8000"
+BASE_URL = os.getenv("E2E_BASE_URL", "http://fastapi_app:8000")
 
 
 def _wait_for_message(page):
-    # Wait until #message has non-empty text
     page.wait_for_function(
         """
         () => {
@@ -31,8 +31,6 @@ def test_register_success():
         page.fill("#password", "password123")
         page.fill("#confirm-password", "password123")
 
-        # Either of these is fine, but keep ONE:
-        # page.click("text=Register")
         page.click("#register-btn")
 
         msg = _wait_for_message(page)
@@ -65,15 +63,13 @@ def test_login_success():
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
-        # First register the user (in case DB is empty)
         page.goto(f"{BASE_URL}/register")
         page.fill("#email", "e2e_user@example.com")
         page.fill("#password", "password123")
         page.fill("#confirm-password", "password123")
         page.click("#register-btn")
-        _ = _wait_for_message(page)  # ignore content
+        _ = _wait_for_message(page)  
 
-        # Now go to login
         page.goto(f"{BASE_URL}/login")
 
         page.fill("#email", "e2e_user@example.com")
@@ -92,7 +88,6 @@ def test_login_wrong_password():
         browser = p.chromium.launch(headless=True)
         page = browser.new_page()
 
-        # Ensure user exists
         page.goto(f"{BASE_URL}/register")
         page.fill("#email", "e2e_user@example.com")
         page.fill("#password", "password123")
@@ -100,7 +95,7 @@ def test_login_wrong_password():
         page.click("#register-btn")
         _ = _wait_for_message(page)
 
-        # Wrong password
+
         page.goto(f"{BASE_URL}/login")
 
         page.fill("#email", "e2e_user@example.com")
