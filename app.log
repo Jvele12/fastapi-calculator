@@ -134,3 +134,127 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-12-01 03:31:53,845 - INFO - Response status: 200
 2025-12-01 03:31:53,952 - INFO - Request: POST http://fastapi_app:8000/login
 2025-12-01 03:31:54,223 - INFO - Response status: 401
+2025-12-07 23:41:13,958 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-07 23:41:13,966 - INFO - Response status: 200
+2025-12-07 23:41:14,327 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-07 23:41:14,374 - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-12-07 23:41:14,751 - INFO - Response status: 201
+2025-12-07 23:41:15,854 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-07 23:41:15,859 - INFO - Response status: 200
+2025-12-07 23:41:16,930 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-07 23:41:16,935 - INFO - Response status: 200
+2025-12-07 23:41:17,110 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-07 23:41:17,440 - INFO - Response status: 201
+2025-12-07 23:41:17,487 - INFO - Request: GET http://fastapi_app:8000/login
+2025-12-07 23:41:17,498 - INFO - Response status: 200
+2025-12-07 23:41:17,704 - INFO - Request: POST http://fastapi_app:8000/login
+2025-12-07 23:41:18,045 - INFO - Response status: 200
+2025-12-07 23:41:19,105 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-07 23:41:19,111 - INFO - Response status: 200
+2025-12-07 23:41:19,280 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-07 23:41:19,624 - INFO - Response status: 201
+2025-12-07 23:41:19,649 - INFO - Request: GET http://fastapi_app:8000/login
+2025-12-07 23:41:19,655 - INFO - Response status: 200
+2025-12-07 23:41:19,776 - INFO - Request: POST http://fastapi_app:8000/login
+2025-12-07 23:41:20,141 - INFO - Response status: 401
+2025-12-07 23:42:37,288 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-07 23:42:37,296 - INFO - Response status: 200
+2025-12-07 23:42:37,470 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-07 23:42:37,485 - INFO - Request: GET http://fastapi_app:8000/login
+2025-12-07 23:42:37,499 - INFO - Response status: 200
+2025-12-07 23:42:37,513 - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-12-07 23:42:37,651 - INFO - Request: POST http://fastapi_app:8000/login
+2025-12-07 23:42:37,681 - INFO - Response status: 401
+2025-12-07 23:42:37,941 - INFO - Response status: 201
+2025-12-07 23:43:08,734 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-07 23:43:08,741 - INFO - Response status: 200
+2025-12-07 23:43:08,948 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-07 23:43:08,975 - INFO - Request: GET http://fastapi_app:8000/login
+2025-12-07 23:43:08,985 - INFO - Response status: 200
+2025-12-07 23:43:09,128 - INFO - Request: POST http://fastapi_app:8000/login
+2025-12-07 23:43:09,136 - INFO - Response status: 401
+2025-12-07 23:43:09,343 - INFO - Response status: 201
+2025-12-07 23:43:39,985 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-07 23:43:39,991 - INFO - Response status: 200
+2025-12-07 23:43:40,172 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-07 23:43:40,493 - INFO - Response status: 201
+2025-12-07 23:43:41,366 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-07 23:43:41,373 - INFO - Response status: 200
+2025-12-07 23:43:42,586 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-07 23:43:42,592 - INFO - Response status: 200
+2025-12-07 23:43:42,805 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-07 23:43:43,125 - INFO - Response status: 201
+2025-12-07 23:43:43,149 - INFO - Request: GET http://fastapi_app:8000/login
+2025-12-07 23:43:43,155 - INFO - Response status: 200
+2025-12-07 23:43:43,284 - INFO - Request: POST http://fastapi_app:8000/login
+2025-12-07 23:43:43,701 - INFO - Response status: 200
+2025-12-07 23:43:44,795 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-07 23:43:44,801 - INFO - Response status: 200
+2025-12-07 23:43:44,989 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-07 23:43:45,345 - INFO - Response status: 201
+2025-12-07 23:43:45,395 - INFO - Request: GET http://fastapi_app:8000/login
+2025-12-07 23:43:45,401 - INFO - Response status: 200
+2025-12-07 23:43:45,533 - INFO - Request: POST http://fastapi_app:8000/login
+2025-12-07 23:43:45,902 - INFO - Response status: 401
+2025-12-07 23:59:32,219 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-07 23:59:32,225 - INFO - Response status: 200
+2025-12-07 23:59:32,459 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-07 23:59:32,489 - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-12-07 23:59:32,810 - INFO - Response status: 201
+2025-12-07 23:59:32,824 - INFO - Request: GET http://fastapi_app:8000/login
+2025-12-07 23:59:32,826 - INFO - Response status: 200
+2025-12-07 23:59:32,942 - INFO - Request: POST http://fastapi_app:8000/login
+2025-12-07 23:59:33,218 - INFO - Response status: 200
+2025-12-07 23:59:33,237 - INFO - Request: GET http://fastapi_app:8000/calculations-ui
+2025-12-07 23:59:33,245 - INFO - Response status: 200
+2025-12-07 23:59:33,263 - INFO - Request: GET http://fastapi_app:8000/calculations
+2025-12-07 23:59:33,272 - INFO - Response status: 200
+2025-12-08 00:00:04,311 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-08 00:00:04,317 - INFO - Response status: 200
+2025-12-08 00:00:04,537 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-08 00:00:04,894 - INFO - Response status: 201
+2025-12-08 00:00:04,915 - INFO - Request: GET http://fastapi_app:8000/login
+2025-12-08 00:00:04,921 - INFO - Response status: 200
+2025-12-08 00:00:05,027 - INFO - Request: POST http://fastapi_app:8000/login
+2025-12-08 00:00:05,303 - INFO - Response status: 200
+2025-12-08 00:00:05,314 - INFO - Request: GET http://fastapi_app:8000/calculations-ui
+2025-12-08 00:00:05,319 - INFO - Response status: 200
+2025-12-08 00:00:05,338 - INFO - Request: GET http://fastapi_app:8000/calculations
+2025-12-08 00:00:05,343 - INFO - Response status: 200
+2025-12-08 00:00:36,329 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-08 00:00:36,334 - INFO - Response status: 200
+2025-12-08 00:00:36,509 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-08 00:00:36,814 - INFO - Response status: 201
+2025-12-08 00:00:37,632 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-08 00:00:37,637 - INFO - Response status: 200
+2025-12-08 00:00:38,709 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-08 00:00:38,714 - INFO - Response status: 200
+2025-12-08 00:00:38,874 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-08 00:00:39,166 - INFO - Response status: 201
+2025-12-08 00:00:39,191 - INFO - Request: GET http://fastapi_app:8000/login
+2025-12-08 00:00:39,196 - INFO - Response status: 200
+2025-12-08 00:00:39,317 - INFO - Request: POST http://fastapi_app:8000/login
+2025-12-08 00:00:39,602 - INFO - Response status: 200
+2025-12-08 00:00:40,339 - INFO - Request: GET http://fastapi_app:8000/register
+2025-12-08 00:00:40,344 - INFO - Response status: 200
+2025-12-08 00:00:40,502 - INFO - Request: POST http://fastapi_app:8000/register
+2025-12-08 00:00:40,835 - INFO - Response status: 201
+2025-12-08 00:00:40,857 - INFO - Request: GET http://fastapi_app:8000/login
+2025-12-08 00:00:40,862 - INFO - Response status: 200
+2025-12-08 00:00:40,992 - INFO - Request: POST http://fastapi_app:8000/login
+2025-12-08 00:00:41,269 - INFO - Response status: 401

@@ -151,7 +151,10 @@ def browse_calculations(
 
 
 @app.get("/calculations/{calc_id}", response_model=schemas.CalculationRead)
-def read_calculation(calc_id: int, db: Session = Depends(get_db)):
+def read_calculation(
+    calc_id: int,
+    db: Session = Depends(get_db),
+):
     calc = crud.get_calculation(db, calc_id)
     if not calc:
         raise HTTPException(status_code=404, detail="Calculation not found")
@@ -164,17 +167,22 @@ def update_calculation_endpoint(
     payload: schemas.CalculationUpdate,
     db: Session = Depends(get_db),
 ):
-    calc = crud.update_calculation(db, calc_id, payload)
+    calc = crud.get_calculation(db, calc_id)
     if not calc:
         raise HTTPException(status_code=404, detail="Calculation not found")
-    return calc
+    updated = crud.update_calculation(db, calc_id, payload)
+    return updated
 
 
 @app.delete("/calculations/{calc_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_calculation_endpoint(calc_id: int, db: Session = Depends(get_db)):
-    ok = crud.delete_calculation(db, calc_id)
-    if not ok:
+def delete_calculation_endpoint(
+    calc_id: int,
+    db: Session = Depends(get_db),
+):
+    calc = crud.get_calculation(db, calc_id)
+    if not calc:
         raise HTTPException(status_code=404, detail="Calculation not found")
+    crud.delete_calculation(db, calc_id)
     return None
 
 # =====================================================
@@ -222,3 +230,8 @@ def login_user_jwt(credentials: schemas.UserLogin, db: Session = Depends(get_db)
 
     token = create_access_token({"sub": user.id})
     return {"access_token": token, "token_type": "bearer"}
+
+
+@app.get("/calculations-ui")
+def calculations_page():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "calculations.html"))

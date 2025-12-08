@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calculations BREAD</title>
+</head>
+<body>
+  <h1>Calculations</h1>
+
+  <p id="error" style="color: red;"></p>
+
+  <div>
+    <label for="calc-a">Operand A:</label>
+    <input id="calc-a" type="number" step="any" />
+
+    <label for="calc-b">Operand B:</label>
+    <input id="calc-b" type="number" step="any" />
+
+    <label for="calc-type">Operation:</label>
+    <select id="calc-type">
+      <option value="add">add</option>
+      <option value="sub">sub</option>
+      <option value="multiply">multiply</option>
+      <option value="divide">divide</option>
+    </select>
+
+    <button id="add-calc-btn" type="button">Add Calculation</button>
+
+    <button id="save-edit-btn" type="button" style="display:none;">Save Edit</button>
+  </div>
+
+  <hr />
+
+  <h2>Existing Calculations</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>A</th>
+        <th>B</th>
+        <th>Type</th>
+        <th>Result</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="calc-table-body">
+    </tbody>
+  </table>
+
+  <script>
+    const errorEl = document.getElementById("error");
+    const aInput = document.getElementById("calc-a");
+    const bInput = document.getElementById("calc-b");
+    const typeSelect = document.getElementById("calc-type");
+    const addBtn = document.getElementById("add-calc-btn");
+    const saveEditBtn = document.getElementById("save-edit-btn");
+    const tableBody = document.getElementById("calc-table-body");
+
+    let editingId = null;
+
+    function clearError() {
+      errorEl.textContent = "";
+    }
+
+    function showError(msg) {
+      errorEl.textContent = msg;
+    }
+
+    function renderRow(calc) {
+      const tr = document.createElement("tr");
+      tr.classList.add("calc-row");
+      tr.dataset.id = calc.id;
+
+      tr.innerHTML = `
+        <td>${calc.id}</td>
+        <td>${calc.a}</td>
+        <td>${calc.b}</td>
+        <td>${calc.type}</td>
+        <td>${calc.result ?? ""}</td>
+        <td>
+          <button type="button" class="edit-btn">Edit</button>
+          <button type="button" class="delete-btn">Delete</button>
+        </td>
+      `;
+
+      tr.querySelector(".edit-btn").addEventListener("click", () => {
+        clearError();
+        editingId = calc.id;
+        aInput.value = calc.a;
+        bInput.value = calc.b;
+        typeSelect.value = calc.type;
+        saveEditBtn.style.display = "inline-block";
+      });
+
+      tr.querySelector(".delete-btn").addEventListener("click", async () => {
+        clearError();
+        try {
+          const resp = await fetch(`/calculations/${calc.id}`, { method: "DELETE" });
+          if (resp.status === 204) {
+            tr.remove();
+          } else {
+            showError("Failed to delete calculation.");
+          }
+        } catch (err) {
+          console.error(err);
+          showError("Network error while deleting calculation.");
+        }
+      });
+
+      return tr;
+    }
+
+    async function loadCalculations() {
+      clearError();
+      tableBody.innerHTML = "";
+      try {
+        const resp = await fetch("/calculations");
+        if (!resp.ok) {
+          showError("Failed to load calculations.");
+          return;
+        }
+        const data = await resp.json();
+        data.forEach(calc => {
+          tableBody.appendChild(renderRow(calc));
+        });
+      } catch (err) {
+        console.error(err);
+        showError("Network error while loading calculations.");
+      }
+    }
+
+    addBtn.addEventListener("click", async () => {
+      clearError();
+      const aVal = parseFloat(aInput.value);
+      const bVal = parseFloat(bInput.value);
+      const typeVal = typeSelect.value;
+
+      if (Number.isNaN(aVal) || Number.isNaN(bVal)) {
+        showError("Both A and B must be valid numbers.");
+        return;
+      }
+
+      try {
+        const resp = await fetch("/calculations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ a: aVal, b: bVal, type: typeVal }),
+        });
+
+        if (resp.status === 422) {
+          // Likely divide-by-zero case
+          showError("Cannot divide by zero.");
+          return;
+        }
+
+        if (!resp.ok) {
+          showError("Failed to create calculation.");
+          return;
+        }
+
+        const calc = await resp.json();
+        tableBody.appendChild(renderRow(calc));
+        aInput.value = "";
+        bInput.value = "";
+      } catch (err) {
+        console.error(err);
+        showError("Network error while creating calculation.");
+      }
+    });
+
+    saveEditBtn.addEventListener("click", async () => {
+      if (!editingId) return;
+
+      clearError();
+      const aVal = parseFloat(aInput.value);
+      const bVal = parseFloat(bInput.value);
+      const typeVal = typeSelect.value;
+
+      if (Number.isNaN(aVal) || Number.isNaN(bVal)) {
+        showError("Both A and B must be valid numbers.");
+        return;
+      }
+
+      try {
+        const resp = await fetch(`/calculations/${editingId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ a: aVal, b: bVal, type: typeVal }),
+        });
+
+        if (resp.status === 422) {
+          showError("Cannot divide by zero.");
+          return;
+        }
+
+        if (!resp.ok) {
+          showError("Failed to update calculation.");
+          return;
+        }
+
+        await loadCalculations();
+        editingId = null;
+        saveEditBtn.style.display = "none";
+        aInput.value = "";
+        bInput.value = "";
+      } catch (err) {
+        console.error(err);
+        showError("Network error while updating calculation.");
+      }
+    });
+
+    loadCalculations();
+  </script>
+</body>
+</html>
