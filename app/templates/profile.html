@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Profile</title>
+</head>
+<body>
+  <h1>Account Settings</h1>
+
+  <p id="status"></p>
+
+  <section>
+    <h2>Update Profile</h2>
+
+    <div>
+      <label for="username">Username:</label>
+      <input id="username" type="text" />
+    </div>
+
+    <div>
+      <label for="email">Email:</label>
+      <input id="email" type="email" />
+    </div>
+
+    <button id="save-profile-btn" type="button">Save Profile</button>
+    <p id="profile-message"></p>
+  </section>
+
+  <hr/>
+
+  <section>
+    <h2>Change Password</h2>
+
+    <div>
+      <label for="current-password">Current Password:</label>
+      <input id="current-password" type="password" />
+    </div>
+
+    <div>
+      <label for="new-password">New Password:</label>
+      <input id="new-password" type="password" />
+    </div>
+
+    <button id="change-password-btn" type="button">Change Password</button>
+    <p id="password-message"></p>
+  </section>
+
+  <script>
+    const statusEl = document.getElementById("status");
+
+    const usernameInput = document.getElementById("username");
+    const emailInput = document.getElementById("email");
+    const saveBtn = document.getElementById("save-profile-btn");
+    const profileMsg = document.getElementById("profile-message");
+
+    const currentPwInput = document.getElementById("current-password");
+    const newPwInput = document.getElementById("new-password");
+    const changePwBtn = document.getElementById("change-password-btn");
+    const pwMsg = document.getElementById("password-message");
+
+    function getToken() {
+      return localStorage.getItem("jwt");
+    }
+
+    function authHeaders() {
+      const token = getToken();
+      return token ? { "Authorization": `Bearer ${token}` } : {};
+    }
+
+    async function loadProfile() {
+      const token = getToken();
+      if (!token) {
+        statusEl.textContent = "Not logged in. Please login first.";
+        return;
+      }
+
+      try {
+        const resp = await fetch("/profile", {
+          method: "GET",
+          headers: {
+            ...authHeaders()
+          }
+        });
+
+        if (!resp.ok) {
+          statusEl.textContent = "Could not load profile (token might be expired).";
+          return;
+        }
+
+        const data = await resp.json();
+        usernameInput.value = data.username || "";
+        emailInput.value = data.email || "";
+        statusEl.textContent = "Profile loaded.";
+      } catch (e) {
+        statusEl.textContent = "Network error loading profile.";
+      }
+    }
+
+    saveBtn.addEventListener("click", async () => {
+      profileMsg.textContent = "";
+
+      const username = usernameInput.value.trim();
+      const email = emailInput.value.trim();
+
+      if (!username && !email) {
+        profileMsg.textContent = "Enter a username and/or email to update.";
+        return;
+      }
+      if (email && !email.includes("@")) {
+        profileMsg.textContent = "Please enter a valid email.";
+        return;
+      }
+
+      try {
+        const resp = await fetch("/profile", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...authHeaders()
+          },
+          body: JSON.stringify({
+            username: username || null,
+            email: email || null
+          })
+        });
+
+        if (resp.ok) {
+          const data = await resp.json();
+          usernameInput.value = data.username || "";
+          emailInput.value = data.email || "";
+          profileMsg.textContent = "Profile updated successfully!";
+        } else {
+          const err = await resp.json().catch(() => ({}));
+          profileMsg.textContent = err.detail || "Profile update failed.";
+        }
+      } catch (e) {
+        profileMsg.textContent = "Network error updating profile.";
+      }
+    });
+
+    changePwBtn.addEventListener("click", async () => {
+      pwMsg.textContent = "";
+
+      const current_password = currentPwInput.value;
+      const new_password = newPwInput.value;
+
+      if (!current_password || !new_password) {
+        pwMsg.textContent = "Both password fields are required.";
+        return;
+      }
+      if (new_password.length < 6) {
+        pwMsg.textContent = "New password must be at least 6 characters.";
+        return;
+      }
+
+      try {
+        const resp = await fetch("/profile/password", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            ...authHeaders()
+          },
+          body: JSON.stringify({ current_password, new_password })
+        });
+
+        if (resp.ok) {
+          pwMsg.textContent = "Password updated";
+          currentPwInput.value = "";
+          newPwInput.value = "";
+        } else {
+          const err = await resp.json().catch(() => ({}));
+          pwMsg.textContent = err.detail || "Password update failed.";
+        }
+      } catch (e) {
+        pwMsg.textContent = "Network error updating password.";
+      }
+    });
+
+    loadProfile();
+  </script>
+</body>
+</html>

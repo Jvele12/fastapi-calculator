@@ -9,7 +9,7 @@ import os
 import time
 from sqlalchemy.exc import OperationalError,  ProgrammingError
 from .database import Base, engine, SessionLocal
-
+from fastapi import Body
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
@@ -120,6 +120,30 @@ def login_user(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
 def read_current_user(current_user = Depends(get_current_user)):
     return current_user
 
+@app.get("/profile", response_model=schemas.UserRead)
+def get_profile(current_user=Depends(get_current_user)):
+    return current_user
+
+
+@app.put("/profile", response_model=schemas.UserRead)
+def update_profile(
+    payload: schemas.UserUpdate,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    updated = crud.update_user_profile(db, current_user, payload)
+    return updated
+
+
+@app.put("/profile/password")
+def update_password(
+    payload: schemas.PasswordChange,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    crud.change_user_password(db, current_user, payload.current_password, payload.new_password)
+    return {"message": "Password updated successfully"}
+
 
 # =====================================================
 #  Calculation BREAD Endpoints
@@ -198,6 +222,11 @@ def register_page():
 def login_page():
     return FileResponse(os.path.join(TEMPLATES_DIR, "login.html"))
 
+@app.get("/profile-ui")
+def profile_page():
+    return FileResponse(os.path.join(TEMPLATES_DIR, "profile.html"))
+
+
 # =====================================================
 #  JWT API endpoints
 # =====================================================
@@ -214,7 +243,8 @@ def register_user_jwt(user: schemas.UserCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Email already registered")
 
     new_user = crud.create_user(db, user)
-    token = create_access_token({"sub": new_user.id})
+    token = create_access_token({"sub": str(new_user.id)})
+
     return {"access_token": token, "token_type": "bearer"}
 
 
@@ -228,7 +258,7 @@ def login_user_jwt(credentials: schemas.UserLogin, db: Session = Depends(get_db)
             detail="Invalid email or password",
         )
 
-    token = create_access_token({"sub": user.id})
+    token = create_access_token({"sub": str(user.id)})
     return {"access_token": token, "token_type": "bearer"}
 
 

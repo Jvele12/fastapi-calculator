@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from . import models, schemas, hashing
 from .factory import compute
-
+from fastapi import HTTPException
 
 # ======================
 # USER CRUD
@@ -36,6 +36,44 @@ def verify_user_credentials(db: Session, email: str, password: str) -> models.Us
     if not hashing.verify_password(password, user.password_hash):
         return None
     return user
+
+def update_user_profile(db: Session, current_user: models.User, payload: schemas.ProfileUpdate) -> models.User:
+    user = db.get(models.User, current_user.id)
+    if not user:
+        raise ValueError("User not found")
+
+    if payload.username is not None:
+        user.username = payload.username
+    if payload.email is not None:
+        user.email = payload.email
+
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def change_user_password(
+    db: Session,
+    current_user: models.User,
+    current_password: str,
+    new_password: str,
+) -> models.User:
+    user = db.get(models.User, current_user.id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if not hashing.verify_password(current_password, user.password_hash):
+        raise HTTPException(status_code=401, detail="Current password is incorrect")
+
+    if len(new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+
+    user.password_hash = hashing.hash_password(new_password)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
 
 
 # ======================

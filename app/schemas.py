@@ -62,7 +62,18 @@ class CalculationRead(BaseModel):
     created_at: datetime
     user_id: Optional[int] = None
 
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[EmailStr] = None
     
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
+
+class ProfileUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[EmailStr] = None
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
