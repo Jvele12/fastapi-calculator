@@ -1,66 +1,98 @@
-# 🧮 FastAPI Calculator + Secure User Model
+# 🧮 FastAPI Calculator + Secure User Profile
 
-A simple calculator web API built with **FastAPI** that supports addition, subtraction, multiplication, and division.  
-This project includes **unit tests**, **integration tests**, **end-to-end (E2E)** tests with **Playwright**, and a **GitHub Actions CI pipeline**.
-This FastAPI application includes arithmetic operations and a secure SQLAlchemy-based User model with hashed passwords. 
-It integrates with PostgreSQL, uses Pydantic schemas for validation, and includes CI/CD automation using GitHub Actions and Docker Hub.
+A FastAPI-based web application that provides arithmetic operations along with a **secure user system** supporting registration, login, profile updates, and password changes.
+
+The project demonstrates **modern backend engineering practices**, including:
+- SQLAlchemy ORM
+- JWT authentication
+- Password hashing (bcrypt)
+- Dockerized deployment
+- Automated testing (unit, integration, E2E)
+- CI/CD with GitHub Actions
 
 ---
 
 ## 🚀 Features
 
-- REST API built using **FastAPI**
-- Endpoints for basic arithmetic operations
-- Unit, Integration, and E2E tests
-- Logging for requests and responses
-- GitHub Actions Continuous Integration (CI)
+- FastAPI REST API
+- User registration & login with JWT authentication
+- **User profile update (username/email)**
+- **Secure password change with hashing**
+- Arithmetic operations (add, subtract, multiply, divide)
+- PostgreSQL database integration
+- Unit, Integration, and Playwright E2E tests
+- Fully Dockerized
+- GitHub Actions CI pipeline
 
 ---
 
-## 🛠️ Installation & Setup
+## 🛠️ Installation & Setup (Local Development)
 
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/Jvele12/fastapi-calculator.git
 cd fastapi-calculator
 2. Create a Virtual Environment
-
-
+bash
+Copy code
 python -m venv venv
-source venv/bin/activate      # On Windows: venv\Scripts\activate
+source venv/bin/activate     # Windows: venv\Scripts\activate
 3. Install Dependencies
-
+bash
+Copy code
 pip install -r requirements.txt
 4. Run the Application
-
+bash
+Copy code
 uvicorn app.main:app --reload
-Visit 👉 http://127.0.0.1:8000/docs to test the API.
+Visit:
 
-# FastAPI Secure User Model with CI/CD
+API docs → http://127.0.0.1:8000/docs
 
-## Run locally
-```bash
+🖥️ Using the Web UI
+Once running (via Docker or locally):
+
+Register:
+http://localhost:8000/register
+
+Login:
+http://localhost:8000/login
+
+Profile & Password Management:
+http://localhost:8000/profile-ui
+
+From the profile page, users can:
+
+Update username and/or email
+
+Change their password securely
+
+Re-login using the new password
+
+🐳 Running with Docker (Recommended)
+bash
+Copy code
 docker-compose up --build
+The app and database will start together in containers.
 
-🧩 2. How to Run Tests Locally
-### Run Tests Locally
-```bash
-# Build and start containers
+🧪 Running Tests
+bash
+Copy code
+# Start containers
 docker-compose up -d --build
 
-# Run tests inside Docker
+# Run all tests
 docker-compose run web pytest -v
+Includes:
 
-### 🐳 3. Docker Hub Link
-```markdown
-### Docker Hub Repository
-Docker image is available here:
-👉 [https://hub.docker.com/r/Jvele12/fastapi-calculator](https://hub.docker.com/r/Jvele12/fastapi-calculator)
+Unit tests
 
+Integration tests
+
+End-to-end tests using Playwright
 
 📦 Data Models Overview
 User Model
-
 Table: users
 
 Fields:
@@ -71,62 +103,62 @@ username (unique)
 
 email (unique)
 
-password_hash (hashed via passlib[bcrypt])
+password_hash (bcrypt)
 
-created_at (timestamp)
+created_at
 
 Schemas:
 
-UserCreate: username, email, password
+UserCreate
 
-UserRead: id, username, email, created_at (no password exposed)
+UserRead
+
+UserUpdate
+
+ProfileUpdate
+
+PasswordChange
 
 Calculation Model
-
 Table: calculations
 
 Fields:
 
 id (PK)
 
-a (float)
-
-b (float)
+a, b (float)
 
 type (enum: add, sub, multiply, divide)
 
-result (float, optional)
+result
 
-created_at (timestamp)
+created_at
 
-user_id (FK to users.id, optional)
+user_id (optional FK)
 
-Schemas:
+Validation:
 
-CalculationCreate: a, b, type
-
-Validation: for type == "divide", b must not be zero
-
-CalculationRead: id, a, b, type, result, user_id, created_at
-
-A simple factory chooses which operation to perform based on CalculationType.
-
+Division by zero is rejected at schema level.
 
 🔁 CI/CD (GitHub Actions)
+Every push to main triggers:
 
-Every commit to main triggers:
+Docker build
 
-Build Docker environment
+PostgreSQL + FastAPI startup
 
-Start Postgres + FastAPI
+Unit, integration, and Playwright E2E tests
 
-Run unit tests
+Docker image build & push (on success)
 
-Run Playwright E2E tests
+Workflow:
 
-If all pass → Build & Push image to Docker Hub
-
-Workflow file: .github/workflows/ci.yml
+bash
+Copy code
+.github/workflows/ci.yml
+🐳 Docker Hub
+Docker image available at:
+👉 https://hub.docker.com/r/Jvele12/fastapi-calculator
 
 👨‍💻 Author
 Jvele12
